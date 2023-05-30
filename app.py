@@ -23,23 +23,29 @@ def home():
 def bucket_post():
     bucket_receive = request.form['bucket_give']
     count = db.bucket.count_documents({})
-    num = count + 1 
+    num = count + 1
     doc = {
-        'num': num,
-        'bucket': bucket_receive,
+        'num': num, 
+        'bucket': bucket_receive, 
         'done': 0
     }
     db.bucket.insert_one(doc)
-    return jsonify({'msg': 'POST /bucket request!'})
+    return jsonify({'msg': 'Data saved'})
 
 @app.route("/bucket/done", methods=["POST"])
 def bucket_done():
-    num_receive = request.form['num_give']
+    num_receive = request.form["num_give"]
     db.bucket.update_one(
-        { 'num': int(num_receive) },
-        { '$set': { 'done': 1 }}
+        {'num': int(num_receive)},
+        {'$set': {'done': 1}}
     )
-    return jsonify({'msg': 'Update done!' })
+    return jsonify({'msg': 'Update done!'})
+
+@app.route("/delete", methods=["POST"])
+def delete_bucket():
+    num_receive = request.form['num_give']
+    db.bucket.delete_one({'num': int(num_receive)})
+    return jsonify({'msg': 'delete done!'})
 
 @app.route("/bucket", methods=["GET"])
 def bucket_get():
